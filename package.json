@@ -1,0 +1,23 @@
+{
+  "name": "clover",
+  "version": "1.0.0",
+  "description": "clover backend simple service to managae backend without a lot of coding",
+  "main": "server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
+  },
+  "keywords": [
+    "clover",
+    "cloverbase",
+    "cloverstore",
+    "cloverauth",
+    "backen",
+    "nodejs",
+    "socket.io",
+    "realtime",
+    "mongodb"
+  ],
+  "author": "Abdellatif Ahammad",
+  "license": "MIT"
+}
