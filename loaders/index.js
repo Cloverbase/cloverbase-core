@@ -1,10 +1,10 @@
-import expressLoader from './express';
-import mongooseLoader from './mongoDB';
+// import expressLoader from './express/index';
+// import run from './mongoDB/index';
 
-export default async ({ expressApp }) => {
+export default async (expressApp) => {
   const mongoConnection = await mongooseLoader();
   console.log('MongoDB Initialized');
-  await expressLoader({ app: expressApp });
+  // await expressLoader(expressApp);
   console.log('Express Initialized');
 
   // ... more loaders can be here

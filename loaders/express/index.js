@@ -10,7 +10,7 @@ export default async (app) => {
 
   app.use(cors());
   app.use(require('morgan')('dev'));
-  app.use(bodyParser.urlencoded({ extended: false }));
+  // app.use(bodyParser.urlencoded({ extended: false }));
 
   // ...More middlewares
 
