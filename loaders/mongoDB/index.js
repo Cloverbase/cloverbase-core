@@ -7,13 +7,12 @@ const client = new MongoClient(uri, {
   useUnifiedTopology: true,
 });
 
-
-async function run() {
+const mongooseLoader = async () => {
 
     const connection = await client.connect();
-    const database = client.db('training');
+    const database = client.db('clover');
     return client;
 
 }
 
-run().catch(console.dir);
+module.exports = mongooseLoader;

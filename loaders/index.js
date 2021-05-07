@@ -1,10 +1,11 @@
-// import expressLoader from './express/index';
-// import run from './mongoDB/index';
+const expressLoader =require('./express/index.js');
+// import run from './mongoDB/index.js';
+const mongooseLoader = require('./mongoDB/index.js')
 
-export default async (expressApp) => {
-  const mongoConnection = await mongooseLoader();
+const loader =  async (expressApp) => {
+  const mongoConnection =  mongooseLoader();
   console.log('MongoDB Initialized');
-  // await expressLoader(expressApp);
+  await expressLoader(expressApp);
   console.log('Express Initialized');
 
   // ... more loaders can be here
@@ -12,3 +13,5 @@ export default async (expressApp) => {
   // ... Initialize agenda
   // ... or Redis, or whatever you want
 }
+
+module.exports = loader;
