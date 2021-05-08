@@ -1,16 +1,16 @@
 const { MongoClient } = require("mongodb");
+const {mongoURI} = require('../../config');
 
-const uri =
-"mongodb://127.0.0.1:27017";
+const uri =mongoURI;
 const client = new MongoClient(uri, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
 
-const mongooseLoader = async () => {
+const mongooseLoader = async (DB_name) => {
 
     const connection = await client.connect();
-    const database = client.db('clover');
+    const database = client.db(DB_name);
     return client;
 
 }

@@ -1,5 +1,15 @@
-const loaders = require('./loaders');
 const express = require('express');
+const loaders = require('./loaders');
+const {port} = require('./config')
+
+
+//  ██████╗ ██╗       ██████╗  ██╗   ██╗ ███████╗ ██████╗  
+// ██╔════╝ ██║      ██╔═══██╗ ██║   ██║ ██╔════╝ ██╔══██╗ 
+// ██║      ██║      ██║   ██║ ██║   ██║ █████╗   ██████╔╝ 
+// ██║      ██║      ██║   ██║ ╚██╗ ██╔╝ ██╔══╝   ██╔══██╗ 
+// ╚██████╗ ███████╗ ╚██████╔╝  ╚████╔╝  ███████╗ ██║  ██║ 
+//  ╚═════╝ ╚══════╝  ╚═════╝    ╚═══╝   ╚══════╝ ╚═╝  ╚═╝ 
+// Author  : Abdellatif Ahammad
 
 
 async function startCloverServer() {
@@ -8,12 +18,12 @@ async function startCloverServer() {
     const app = express();
    
     await loaders(app);
-    app.listen(process.env.PORT || 5000, err => {
+    app.listen(port || 5000, err => {
       if (err) {
         console.log(err);
         return;
       }
-      console.log(`Clover server is ready and runing in port : ${process.env.PORT || 5000}!`);
+      console.log(`Clover server is ready and runing in port : ${port || 5000}!`);
     });
   }
 
