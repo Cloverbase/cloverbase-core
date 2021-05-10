@@ -1,7 +1,7 @@
 const expressLoader =require('./express/index.js');
 // import run from './mongoDB/index.js';
 const mongooseLoader = require('./mongoDB/index.js')
-const {db,mongoURI} = require('../config')
+const {db,mongoURI} = require('../config/config')
 const CFonts = require('cfonts');
 
 

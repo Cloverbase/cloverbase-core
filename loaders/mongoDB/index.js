@@ -1,17 +1,16 @@
-const { MongoClient } = require("mongodb");
-const {mongoURI} = require('../../config');
+const { Connect, InsertOneToCollection, getFromWhere } = require("../../database");
 
-const uri =mongoURI;
-const client = new MongoClient(uri, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true,
-});
+
 
 const mongooseLoader = async (DB_name) => {
-
-    const connection = await client.connect();
-    const database = client.db(DB_name);
-    return client;
+    const connection = Connect();
+    // InsertOneToCollection('clover_configuration',{admin_email:null,admin_name:"clover"});
+    // InsertOneToCollection('clover_indexs',{})
+    const v = getFromWhere('movies',{field:'title',op:'nin',value: ['One piece',"test"]}).then(res=>{
+      res.forEach(el=>{
+        console.log(el);
+      })
+    })
 
 }
 

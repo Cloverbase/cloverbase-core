@@ -1,6 +1,6 @@
 const express = require('express');
 const loaders = require('./loaders');
-const {port} = require('./config')
+const {port} = require('./config/config')
 
 
 //  ██████╗ ██╗       ██████╗  ██╗   ██╗ ███████╗ ██████╗  
