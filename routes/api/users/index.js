@@ -1,7 +1,7 @@
-const mongoose = require('mongoose');
-const passport = require('passport');
-const LocalStrategy = require('passport-local');
-const Users = require('../models/Users.js');
+const express = require('express');
+const auth = require('../../auth');
+const router = express.Router();
+const { login, register } = require('../../../controllers/usersController');
 
 
 //  ██████╗ ██╗       ██████╗  ██╗   ██╗ ███████╗ ██████╗  
@@ -14,16 +14,15 @@ const Users = require('../models/Users.js');
 // 
 
 
-passport.use(new LocalStrategy({
-    usernameField: 'user[email]',
-    passwordField: 'user[password]',
-}, (email, password, done) => {
-    Users.findOne({ email })
-        .then((user) => {
-            if (!user || !user.validatePassword(password)) {
-                return done(null, false, { errors: { 'email or password': 'is invalid' } });
-            }
 
-            return done(null, user);
-        }).catch(done);
-}));
+///@route User api/Users
+///@desc Create an User 
+// @access public
+router.post('/singup', auth.optional,register);
+
+//@router User api/users
+//@desc login via passportjs
+//@access public
+router.post('/login', auth.optional,login);
+
+module.exports = router ; 

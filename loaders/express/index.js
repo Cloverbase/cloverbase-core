@@ -1,14 +1,15 @@
 const express = require('express');
 const  bodyParser = require('body-parser');
 const cors = require('cors');
-
+var path = require('path');
 const expressLoader = (app) => {
 
   // ...More middlewares
   // the boddy midlleware for the app(included in the new version of express :)
   app.use(express.json());
   // require('./config/passport');
-  app.use('/uploads',express.static( __dirname + "/uploads"));
+  app.use('/uploads',express.static( path.join(__dirname, '../../uploads')));
+  console.log(path.join(__dirname, '../../uploads'));
   /*------------- the routes :-) */
   app.use(require('../../routes'));
     ///404 error page

@@ -1,7 +1,8 @@
-const mongoose = require('mongoose');
-const passport = require('passport');
-const LocalStrategy = require('passport-local');
-const Users = require('../models/Users.js');
+const express = require('express');
+const router = express.Router();
+const auth = require('../../auth');
+const { uploadFile, uploadMultipleFiles } = require('../../../controllers/storageController');
+const { upload } = require('../../../services/storage');
 
 
 //  ██████╗ ██╗       ██████╗  ██╗   ██╗ ███████╗ ██████╗  
@@ -13,17 +14,13 @@ const Users = require('../models/Users.js');
 // created by : Abdellatif Ahammad
 // 
 
+// storage 
+// upload single file 
 
-passport.use(new LocalStrategy({
-    usernameField: 'user[email]',
-    passwordField: 'user[password]',
-}, (email, password, done) => {
-    Users.findOne({ email })
-        .then((user) => {
-            if (!user || !user.validatePassword(password)) {
-                return done(null, false, { errors: { 'email or password': 'is invalid' } });
-            }
+router.post('/uploadfile',auth.required, upload.single('myFile'),uploadFile )
 
-            return done(null, user);
-        }).catch(done);
-}));
+// upload multiple files 
+router.post('/uploadmultiple',auth.required, upload.array('myFiles', 12),uploadMultipleFiles )
+
+
+module.exports = router;

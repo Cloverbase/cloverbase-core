@@ -1,8 +1,3 @@
-const mongoose = require('mongoose');
-const passport = require('passport');
-const LocalStrategy = require('passport-local');
-const Users = require('../models/Users.js');
-
 
 //  ██████╗ ██╗       ██████╗  ██╗   ██╗ ███████╗ ██████╗  
 // ██╔════╝ ██║      ██╔═══██╗ ██║   ██║ ██╔════╝ ██╔══██╗ 
@@ -14,16 +9,22 @@ const Users = require('../models/Users.js');
 // 
 
 
-passport.use(new LocalStrategy({
-    usernameField: 'user[email]',
-    passwordField: 'user[password]',
-}, (email, password, done) => {
-    Users.findOne({ email })
-        .then((user) => {
-            if (!user || !user.validatePassword(password)) {
-                return done(null, false, { errors: { 'email or password': 'is invalid' } });
-            }
+exports.uploadFile = (req, res, next) => {
+    const file = req.file
+    if (!file) {
+      const error = new Error('Please upload a file')
+      error.httpStatusCode = 400
+      return next(error)
+    }
+      res.send(file)
+}
 
-            return done(null, user);
-        }).catch(done);
-}));
+exports.uploadMultipleFiles = (req, res, next) => {
+    const files = req.files
+    if (!files) {
+      const error = new Error('Please choose files')
+      error.httpStatusCode = 400
+      return next(error)
+    }
+      res.send(files)    
+}

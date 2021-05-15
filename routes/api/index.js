@@ -6,5 +6,6 @@ const router = express.Router();
 
 // router.use('/users', require('./users/users'));
 router.use('/clover',require('./clover/index'))
-
+router.use('/clover_storage',require('./storage/index'))
+router.use('/users',require('./users'))
 module.exports = router;

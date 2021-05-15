@@ -1,7 +1,4 @@
-const mongoose = require('mongoose');
-const passport = require('passport');
-const LocalStrategy = require('passport-local');
-const Users = require('../models/Users.js');
+const { getCollections, getDBInfo,getCollectionData } = require('../../database');
 
 
 //  ██████╗ ██╗       ██████╗  ██╗   ██╗ ███████╗ ██████╗  
@@ -14,16 +11,25 @@ const Users = require('../models/Users.js');
 // 
 
 
-passport.use(new LocalStrategy({
-    usernameField: 'user[email]',
-    passwordField: 'user[password]',
-}, (email, password, done) => {
-    Users.findOne({ email })
-        .then((user) => {
-            if (!user || !user.validatePassword(password)) {
-                return done(null, false, { errors: { 'email or password': 'is invalid' } });
-            }
+exports.hello = async(req,res,next)=>{
+    return res.json({grating:"hello this is clover core API!"})
+}
 
-            return done(null, user);
-        }).catch(done);
-}));
+exports.dbInfo = async (req,res,next)=>{
+    const db_info = await getDBInfo();
+    return res.json(db_info);
+}
+
+exports.getDbCollections = async (req,res,next)=>{
+    const collections = await  getCollections();
+    return res.json({data:collections});
+}
+
+exports.collectionData = async (req,res,next)=>{
+    if(req.params.collection){  
+        const collection = await getCollectionData(req.params.collection,req.query.page?req.query.page:1,req.query.limit);
+        return res.json(collection);
+    }else{
+        return [];
+    }
+}

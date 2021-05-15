@@ -36,6 +36,7 @@ const loader =  async (expressApp) => {
   console.log("DB URI: " + mongoURI);
   await expressLoader(expressApp);
   console.log('Express Initialized');
+  require('../config/passport')
 
   // ... more loaders can be here
 

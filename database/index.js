@@ -1,13 +1,24 @@
 const { MongoClient } = require("mongodb");
-const {db,mongoURI} = require('../config/config')
-
+const {db,mongoURI, paginationSize, appURL, port} = require('../config/config');
+const { paginate } = require("../helpers/paginator");
 const uri =mongoURI;
 const client = new MongoClient(uri, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
-
 var collections =  null;
+
+
+
+//  ██████╗ ██╗       ██████╗  ██╗   ██╗ ███████╗ ██████╗  
+// ██╔════╝ ██║      ██╔═══██╗ ██║   ██║ ██╔════╝ ██╔══██╗ 
+// ██║      ██║      ██║   ██║ ██║   ██║ █████╗   ██████╔╝ 
+// ██║      ██║      ██║   ██║ ╚██╗ ██╔╝ ██╔══╝   ██╔══██╗ 
+// ╚██████╗ ███████╗ ╚██████╔╝  ╚████╔╝  ███████╗ ██║  ██║ 
+//  ╚═════╝ ╚══════╝  ╚═════╝    ╚═══╝   ╚══════╝ ╚═╝  ╚═╝ 
+// created by : Abdellatif Ahammad
+// 
+
 
 const Connect = async()=>{
     const connection = await client.connect();
@@ -34,14 +45,13 @@ const GetFrom = async(collection)=>{
 const conditions = [{field:'title',op:'=',value:"test"}]
 const getFromWhere = async(collection,condition)=>{
     var cursor =[];
-    var options = {
-        "limit": 1,
-        "skip": 3,
-        "sort": "title"
-    }
+    // var options = {
+    //     "limit": 1,
+    //     "skip": 3,
+    //     "sort": "title"
+    // }
     switch (condition.op) {
         case "=":
-            console.log("===================================");
             var cursor =  client.db(db).collection(collection).find({[condition.field] :condition.value});
             break;
         case "!=":
@@ -63,7 +73,46 @@ const getFromWhere = async(collection,condition)=>{
             var cursor =  client.db(db).collection(collection).find({[condition.field] :{$in:condition.value}});
             break;
         case "nin":
-            var cursor =  client.db(db).collection(collection).find({[condition.field] :{$nin:condition.value}},options);
+            var cursor =  client.db(db).collection(collection).find({[condition.field] :{$nin:condition.value}});
+            break;
+        default:
+            break;
+    }
+    return cursor;
+}
+
+
+const getFromWhereIntern = async(collection,condition)=>{
+    var cursor =[];
+    // var options = {
+    //     "limit": 1,
+    //     "skip": 3,
+    //     "sort": "title"
+    // }
+    switch (condition.op) {
+        case "=":
+            var cursor =  client.db(db).collection(collection).find({[condition.field] :condition.value}).toArray();
+            break;
+        case "!=":
+            var cursor =  client.db(db).collection(collection).find({[condition.field] :{$ne:condition.value}}).toArray();
+            break;
+        case ">":
+            var cursor =  client.db(db).collection(collection).find({[condition.field] :{$gt:condition.value}}).toArray();
+            break;
+        case "<":
+            var cursor =  client.db(db).collection(collection).find({[condition.field] :{$lt:condition.value}}).toArray();
+            break;
+        case ">=":
+            var cursor =  client.db(db).collection(collection).find({[condition.field] :{$gte:condition.value}}).toArray();
+            break;
+        case "<=":
+            var cursor =  client.db(db).collection(collection).find({[condition.field] :{$lte:condition.value}}).toArray();
+            break;
+        case "in":
+            var cursor =  client.db(db).collection(collection).find({[condition.field] :{$in:condition.value}}).toArray();
+            break;
+        case "nin":
+            var cursor =  client.db(db).collection(collection).find({[condition.field] :{$nin:condition.value}}).toArray();
             break;
         default:
             break;
@@ -83,10 +132,7 @@ const InsertManyToCollection  = async (collection,data)=>{
 
 
 const  CreateIndex = async(collection,indexs)=>{
-    // exemple : { "title" : 1,"_id":-1 }
-
     return await client.db(db).collection(collection).createIndex(indexs)
-
 }
 
 const getIndexs = async(collection)=>{
@@ -95,7 +141,26 @@ const getIndexs = async(collection)=>{
        listOfIndexs.push(...res.cursor.firstBatch);
     })
     return listOfIndexs;
+}
 
+const getCollections = async ()=>{
+    const listOfCollections = await client.db(db).listCollections({},{nameOnly:true}).toArray();
+    return listOfCollections;
+}
+
+const getDBInfo = async ()=>{
+    const info = await client.db(db).stats();
+    return info;
+}
+
+const getCollectionData = async (collection,page,limit)=>{
+    if(collection){
+        const col  = await  client.db(db).collection(collection);
+        const data = paginate(col,limit?limit:paginationSize,page,collection)
+        return data;
+    }else{
+        return [];
+    }
 }
 
 
@@ -104,4 +169,8 @@ module.exports={
     Connect,
     InsertOneToCollection,
     getFromWhere,
+    getFromWhereIntern,
+    getCollections,
+    getDBInfo,
+    getCollectionData,
 }
