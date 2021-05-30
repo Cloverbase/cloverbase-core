@@ -1,8 +1,8 @@
 const express = require('express');
+const { hello, dbInfo, getDbCollections, collectionData, addToCollection, getFromCollectionWhere } = require('../../../../controllers/cloverController');
+const access = require('../../../access');
+const auth = require('../../../auth');
 const router = express.Router();
-const auth = require('../../auth');
-const { uploadFile, uploadMultipleFiles } = require('../../../controllers/storageController');
-const { upload } = require('../../../services/storage');
 
 
 //  ██████╗ ██╗       ██████╗  ██╗   ██╗ ███████╗ ██████╗  
@@ -14,13 +14,18 @@ const { upload } = require('../../../services/storage');
 // created by : Abdellatif Ahammad
 // 
 
-// storage 
-// upload single file 
 
-router.post('/uploadfile',auth.required, upload.single('myFile'),uploadFile )
+router.get('/',auth.required,access('readOwn','profile'),hello)
 
-// upload multiple files 
-router.post('/uploadmultiple',auth.required, upload.array('myFiles', 12),uploadMultipleFiles )
+router.get('/db_info',dbInfo)
+ 
+router.get('/getcollections',auth.required,access('readOwn','dbInfo'),getDbCollections)
+
+router.get('/collection/:collection',collectionData)
+
+router.post('/addtocollection/:collection',addToCollection)
+
+router.post('/getfromwhere/:collection',getFromCollectionWhere)
 
 
 module.exports = router;

@@ -22,9 +22,21 @@ const UserSchema = new Schema({
         default: 'basic',
         enum: ["basic", "supervisor", "admin"]
     },
+    active:{
+        type:Boolean,
+        require:true,
+        default:false,
+    },
+    verificationCode:{
+        type:String,
+    },
     created_at: {
         type: Date,
-        default: Date.now
+        default: Date.now,
+    },
+    updated_at:{
+        type: Date,
+        default: Date.now,
     }
 });
 
@@ -48,6 +60,7 @@ UserSchema.methods.generateJWT = function() {
     return jwt.sign({
         email: this.email,
         id: this._id,
+        role: this.role,
         exp: parseInt(expirationDate.getTime() / 1000, 10),
     }, 'secret');
 }
@@ -61,8 +74,5 @@ UserSchema.methods.toAuthJSON = function() {
 };
 
 
-
-
-
 /// create a new collectio in  mongo db called  user that's all
-module.exports = User = mongoose.model('users_', UserSchema);
+module.exports = User = mongoose.model('users', UserSchema);

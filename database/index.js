@@ -42,14 +42,15 @@ const GetFrom = async(collection)=>{
     }
 }
 
-const conditions = [{field:'title',op:'=',value:"test"}]
-const getFromWhere = async(collection,condition)=>{
+const conditions = [{field:'title',op:'=',value:"test"}] ; 
+const getFromWhere = async(collection,condition,page,limit)=> {
     var cursor =[];
     // var options = {
     //     "limit": 1,
     //     "skip": 3,
     //     "sort": "title"
     // }
+
     switch (condition.op) {
         case "=":
             var cursor =  client.db(db).collection(collection).find({[condition.field] :condition.value});
@@ -78,46 +79,43 @@ const getFromWhere = async(collection,condition)=>{
         default:
             break;
     }
-    return cursor;
+    const data = paginate(cursor,limit?limit:paginationSize,page,collection)
+    return data;
 }
 
 
-const getFromWhereIntern = async(collection,condition)=>{
+const getFromWhereIntern = async(collection,condition,page,limit)=>{
     var cursor =[];
-    // var options = {
-    //     "limit": 1,
-    //     "skip": 3,
-    //     "sort": "title"
-    // }
     switch (condition.op) {
         case "=":
-            var cursor =  client.db(db).collection(collection).find({[condition.field] :condition.value}).toArray();
+            var cursor =  client.db(db).collection(collection).find({[condition.field] :condition.value});
             break;
         case "!=":
-            var cursor =  client.db(db).collection(collection).find({[condition.field] :{$ne:condition.value}}).toArray();
+            var cursor =  client.db(db).collection(collection).find({[condition.field] :{$ne:condition.value}});
             break;
         case ">":
-            var cursor =  client.db(db).collection(collection).find({[condition.field] :{$gt:condition.value}}).toArray();
+            var cursor =  client.db(db).collection(collection).find({[condition.field] :{$gt:condition.value}});
             break;
         case "<":
-            var cursor =  client.db(db).collection(collection).find({[condition.field] :{$lt:condition.value}}).toArray();
+            var cursor =  client.db(db).collection(collection).find({[condition.field] :{$lt:condition.value}});
             break;
         case ">=":
-            var cursor =  client.db(db).collection(collection).find({[condition.field] :{$gte:condition.value}}).toArray();
+            var cursor =  client.db(db).collection(collection).find({[condition.field] :{$gte:condition.value}});
             break;
         case "<=":
-            var cursor =  client.db(db).collection(collection).find({[condition.field] :{$lte:condition.value}}).toArray();
+            var cursor =  client.db(db).collection(collection).find({[condition.field] :{$lte:condition.value}});
             break;
         case "in":
-            var cursor =  client.db(db).collection(collection).find({[condition.field] :{$in:condition.value}}).toArray();
+            var cursor =  client.db(db).collection(collection).find({[condition.field] :{$in:condition.value}});
             break;
         case "nin":
-            var cursor =  client.db(db).collection(collection).find({[condition.field] :{$nin:condition.value}}).toArray();
+            var cursor =  client.db(db).collection(collection).find({[condition.field] :{$nin:condition.value}});
             break;
         default:
             break;
     }
-    return cursor;
+    const data = paginate(cursor,limit?limit:paginationSize,page,collection)
+    return data;
 }
 
 const InsertOneToCollection = async(collection,data)=>{
@@ -155,7 +153,7 @@ const getDBInfo = async ()=>{
 
 const getCollectionData = async (collection,page,limit)=>{
     if(collection){
-        const col  = await  client.db(db).collection(collection);
+        const col  = await  client.db(db).collection(collection).find({});
         const data = paginate(col,limit?limit:paginationSize,page,collection)
         return data;
     }else{

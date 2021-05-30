@@ -12,8 +12,8 @@ const { appURL, port } = require("../config/config");
 
 
 const paginate = async (collection,paginationSize,page,collectionName)=>{
-    const data =await  collection.find({}).skip(page?(Number(page)-1)*paginationSize:0).limit(Number(paginationSize)).toArray();
-    const total  = await collection.countDocuments();
+    const data =await  collection.skip(page?(Number(page)-1)*paginationSize:0).limit(Number(paginationSize)).toArray();
+    const total  = await collection.count();
     const last = (total>paginationSize?paginationSize!==0?Math.floor(Number(total)/paginationSize):1:1);
     const conf = {
         "total" : total,

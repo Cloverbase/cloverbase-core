@@ -1,7 +1,7 @@
 const jwt = require('express-jwt');
 
 
-
+// 
 //  ██████╗ ██╗       ██████╗  ██╗   ██╗ ███████╗ ██████╗  
 // ██╔════╝ ██║      ██╔═══██╗ ██║   ██║ ██╔════╝ ██╔══██╗ 
 // ██║      ██║      ██║   ██║ ██║   ██║ █████╗   ██████╔╝ 
@@ -25,14 +25,14 @@ const auth = {
     //required make acsse just for hwo is loged in
     required: jwt({
         secret: 'secret',
-        userProperty: 'payload',
+        userProperty: 'user',
         getToken: getTokenFromHeaders,
         algorithms: ['sha1', 'RS256', 'HS256'],
     }),
     // in the case of we case of some service it's can be without login
     optional: jwt({
         secret: 'secret',
-        userProperty: 'payload',
+        userProperty: 'user',
         getToken: getTokenFromHeaders,
         credentialsRequired: false,
         algorithms:['sha1', 'RS256', 'HS256'],

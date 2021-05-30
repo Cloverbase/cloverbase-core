@@ -1,7 +1,8 @@
 const express = require('express');
-const auth = require('../../auth');
 const router = express.Router();
-const { login, register } = require('../../../controllers/usersController');
+const auth = require('../../../auth');
+const { uploadFile, uploadMultipleFiles } = require('../../../../controllers/storageController');
+const { upload } = require('../../../../services/storage');
 
 
 //  ██████╗ ██╗       ██████╗  ██╗   ██╗ ███████╗ ██████╗  
@@ -13,16 +14,13 @@ const { login, register } = require('../../../controllers/usersController');
 // created by : Abdellatif Ahammad
 // 
 
+// storage 
+// upload single file 
+
+router.post('/uploadfile', auth.optional, upload.single('myFile'),uploadFile )
+
+// upload multiple files 
+router.post('/uploadmultiple', auth.required, upload.array('myFiles', 12),uploadMultipleFiles )
 
 
-///@route User api/Users
-///@desc Create an User 
-// @access public
-router.post('/singup', auth.optional,register);
-
-//@router User api/users
-//@desc login via passportjs
-//@access public
-router.post('/login', auth.optional,login);
-
-module.exports = router ; 
+module.exports = router;

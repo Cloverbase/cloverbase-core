@@ -1,6 +1,8 @@
 const express = require('express');
-const { hello, dbInfo, getDbCollections, collectionData } = require('../../../controllers/cloverController');
+const auth = require('../../../auth');
 const router = express.Router();
+const { login, register,activate, resetPassword, forgetPassword } = require('../../../../controllers/usersController');
+const activation = require('../../../activation');
 
 
 //  ██████╗ ██╗       ██████╗  ██╗   ██╗ ███████╗ ██████╗  
@@ -13,13 +15,32 @@ const router = express.Router();
 // 
 
 
-router.get('/',hello)
 
-router.get('/db_info',dbInfo)
- 
-router.get('/getcollections',getDbCollections)
-
-router.get('/collection/:collection',collectionData)
+///@route User api/Users
+///@desc Create an User 
+// @access public
+router.post('/singup', auth.optional, register);
 
 
-module.exports = router;
+//@router User api/users
+//@desc activating account from email
+//@access public
+router.post('/activateAccount', activate);
+
+//@router User api/users
+//@desc activating account from email
+//@access public
+router.post('/resetPassword', resetPassword);
+
+//@router User api/users
+//@desc activating account from email
+//@access public
+router.post('/forgetPassword', forgetPassword);
+
+
+//@router User api/users
+//@desc login via passportjs
+//@access public
+router.post('/login',activation(), login);
+
+module.exports = router ;
