@@ -3,6 +3,7 @@ const expressLoader =require('./express/index.js');
 const mongooseLoader = require('./mongoDB/index.js')
 const {db,mongoURI} = require('../config/config')
 const CFonts = require('cfonts');
+const { getDbRules } = require('../database/index.js');
 
 
 
@@ -14,6 +15,7 @@ const CFonts = require('cfonts');
 //  ╚═════╝ ╚══════╝  ╚═════╝    ╚═══╝   ╚══════╝ ╚═╝  ╚═╝ 
 // Author  : Abdellatif Ahammad
 
+var db_rules ={}
 
 const loader =  async (expressApp) => {
   const mongoConnection =  mongooseLoader(db);

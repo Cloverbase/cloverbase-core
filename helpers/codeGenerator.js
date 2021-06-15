@@ -1,3 +1,4 @@
+const { v4: uuidv4 } = require('uuid');
 
 const generateCode =  (length)=>{
     var result           = [];
@@ -10,4 +11,10 @@ const generateCode =  (length)=>{
    return result.join('');
 }
 
-module.exports = {generateCode}
+const generateSdkKey = () => {
+  
+  return uuidv4();
+
+}
+
+module.exports = {generateCode,generateSdkKey}

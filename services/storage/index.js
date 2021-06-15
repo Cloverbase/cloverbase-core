@@ -23,12 +23,19 @@ var storage = multer.diskStorage({
   })
 
 const fileFilter = (req, file, cb) => {
+
 // image/jpeg
 // image/png
 // audio/mpeg
 // audio/ogg
 // audio/*
 // video/mp4
+// application/pdf
+// application/vnd.ms-powerpoint
+// application/x-rar-compressed
+// image/svg+xml
+// application/zip
+
     if (file.mimetype == 'image/jpeg' || file.mimetype == 'image/png' || file.mimetype == 'audio/mpeg' || file.mimetype == 'audio/ogg' || file.mimetype == 'audio/*' || file.mimetype == 'video/mp4' ) {
         cb(null, true);
     } else {
@@ -36,7 +43,7 @@ const fileFilter = (req, file, cb) => {
     }
 }
    
-var upload = multer({fileFilter, storage: storage })
+var upload = multer({ fileFilter , storage: storage })
 
 module.exports = {
       upload,

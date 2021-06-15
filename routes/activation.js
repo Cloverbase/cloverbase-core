@@ -20,6 +20,6 @@ const activation = function() {
       next(error)
      }
     }
-   }
+}
 
 module.exports = activation ;

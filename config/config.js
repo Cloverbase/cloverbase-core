@@ -22,5 +22,11 @@ module.exports =  {
     mailPort  : process.env.MAIL_PORT,
     mailUser  :  process.env.MAIL_USERNAME,
     mailPassword  : process.env.MAIL_PASSWORD,
-
+    appName:  process.env.APP_NAME,
+    adminEmail : process.env.ADMIN_EMAIL,
+    adminPassword :process.env.ADMIN_PASSWORD,
+    adminSdkKey: process.env.ADMIN_SDK,
+    readRules: process.env.READ_RULE,
+    writeRules: process.env.WRITE_RULE,
+    storageRules: process.env.STORAGE_RULE,
 }

@@ -4,19 +4,21 @@ const ac = new AccessControl();
 exports.roles = (function() {
 
 ac.grant("basic")
- .readOwn("profile",["email"])
- .updateOwn("images")
+ .readOwn("data")
+ .createOwn("data")
+ .updateOwn("data")
+ .deleteOwn('data')
+ .createOwn('files')
  
-ac.grant("supervisor")
- .extend("basic")
- .readAny("profile")
  
 ac.grant("admin")
  .extend("basic")
- .extend("supervisor")
- .updateAny("profile")
- .deleteAny("profile")
- .readOwn('dbInfo')
+ .readAny('data')
+ .createAny('data')
+ .updateAny("data")
+ .deleteAny("data")
+ .createAny('files')
+
  
 return ac;
 })();

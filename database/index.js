@@ -6,10 +6,12 @@ const client = new MongoClient(uri, {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
+var mongo = require('mongodb');
+const { generateSdkKey } = require("../helpers/codeGenerator");
 var collections =  null;
 
 
-
+// 
 //  ██████╗ ██╗       ██████╗  ██╗   ██╗ ███████╗ ██████╗  
 // ██╔════╝ ██║      ██╔═══██╗ ██║   ██║ ██╔════╝ ██╔══██╗ 
 // ██║      ██║      ██║   ██║ ██║   ██║ █████╗   ██████╔╝ 
@@ -22,7 +24,6 @@ var collections =  null;
 
 const Connect = async()=>{
     const connection = await client.connect();
-    collections = client.db(db).collections;
     return connection;
 }
 
@@ -34,7 +35,7 @@ const Collection = async(collection)=>{
     return client.db(db).collection(collection)
 }
 
-const GetFrom = async(collection)=>{
+const getFrom = async(collection)=>{
     if(collection){
     return client.db(db).collection(collection).find({})
     }else{
@@ -45,12 +46,6 @@ const GetFrom = async(collection)=>{
 const conditions = [{field:'title',op:'=',value:"test"}] ; 
 const getFromWhere = async(collection,condition,page,limit)=> {
     var cursor =[];
-    // var options = {
-    //     "limit": 1,
-    //     "skip": 3,
-    //     "sort": "title"
-    // }
-
     switch (condition.op) {
         case "=":
             var cursor =  client.db(db).collection(collection).find({[condition.field] :condition.value});
@@ -88,34 +83,34 @@ const getFromWhereIntern = async(collection,condition,page,limit)=>{
     var cursor =[];
     switch (condition.op) {
         case "=":
-            var cursor =  client.db(db).collection(collection).find({[condition.field] :condition.value});
+            var cursor =  client.db(db).collection(collection).find({[condition.field] :condition.value}).toArray();
             break;
         case "!=":
-            var cursor =  client.db(db).collection(collection).find({[condition.field] :{$ne:condition.value}});
+            var cursor =  client.db(db).collection(collection).find({[condition.field] :{$ne:condition.value}}).toArray();
             break;
         case ">":
-            var cursor =  client.db(db).collection(collection).find({[condition.field] :{$gt:condition.value}});
+            var cursor =  client.db(db).collection(collection).find({[condition.field] :{$gt:condition.value}}).toArray();
             break;
         case "<":
-            var cursor =  client.db(db).collection(collection).find({[condition.field] :{$lt:condition.value}});
+            var cursor =  client.db(db).collection(collection).find({[condition.field] :{$lt:condition.value}}).toArray();
             break;
         case ">=":
-            var cursor =  client.db(db).collection(collection).find({[condition.field] :{$gte:condition.value}});
+            var cursor =  client.db(db).collection(collection).find({[condition.field] :{$gte:condition.value}}).toArray();
             break;
         case "<=":
-            var cursor =  client.db(db).collection(collection).find({[condition.field] :{$lte:condition.value}});
+            var cursor =  client.db(db).collection(collection).find({[condition.field] :{$lte:condition.value}}).toArray();
             break;
         case "in":
-            var cursor =  client.db(db).collection(collection).find({[condition.field] :{$in:condition.value}});
+            var cursor =  client.db(db).collection(collection).find({[condition.field] :{$in:condition.value}}).toArray();
             break;
         case "nin":
-            var cursor =  client.db(db).collection(collection).find({[condition.field] :{$nin:condition.value}});
+            var cursor =  client.db(db).collection(collection).find({[condition.field] :{$nin:condition.value}}).toArray();
             break;
         default:
             break;
     }
-    const data = paginate(cursor,limit?limit:paginationSize,page,collection)
-    return data;
+    // const data = paginate(cursor,limit?limit:paginationSize,page,collection)
+    return cursor;
 }
 
 const InsertOneToCollection = async(collection,data)=>{
@@ -161,7 +156,85 @@ const getCollectionData = async (collection,page,limit)=>{
     }
 }
 
+const getById = async (collection,id) => {
+    if(collection&&id){
+        const o_id = new mongo.ObjectID(id);
+        const doc = await client.db(db).collection(collection).findOne({"_id":o_id})
+        return doc;
+    }else{
+        []
+    }
+}
 
+
+const getByIdAndUpdate = async (collection,id,data) => {
+    if(collection&&id&&data){
+        const o_id = new mongo.ObjectID(id);
+        const doc = await client.db(db).collection(collection).findOneAndUpdate({"_id":o_id},{$set:data});
+        return doc;
+    }else{
+        []
+    }
+}
+
+
+const removeById = async (collection,id) => {
+    if(collection&&id){
+        const o_id = new mongo.ObjectID(id);
+        const doc = await client.db(db).collection(collection).findOneAndDelete({"_id":o_id});
+        return doc;
+    }else{
+        []
+    }
+}
+
+
+const getDbRules =  () =>{
+    return  client.db(db).collection('clover_data_rules').find({}).toArray()
+}
+
+const getGeneralConf = async (collection) => {
+    return client.db(db).collection('clover_general_conf').findOne({})
+}
+
+
+const addStorage = (data) =>{
+    return client.db(db).collection('clover_storage').insertOne(data)
+}
+
+const addManyStorage = (data) =>{
+    return client.db(db).collection('clover_storage').insertMany(data)
+}
+
+
+const findStorage = (filename,token) =>{
+    return client.db(db).collection('clover_storage').findOne({filename:filename,token:token})
+}
+
+
+const deleteStorage = (filename,token) =>{
+    return client.db(db).collection('clover_storage').findOneAndDelete({filename:filename,token:token})
+}
+
+const countStorage  =()=>{
+    return client.db(db).collection('clover_storage').find({}).count()
+}
+
+const updateReads = ()=>{
+    return client.db(db).collection('clover_statistics').findOneAndUpdate({},{$inc:{read:1}})
+}
+
+const updateWrites = ()=>{
+    return client.db(db).collection('clover_statistics').findOneAndUpdate({},{$inc:{write:1}})
+}
+
+const updateRequests = ()=>{
+    return client.db(db).collection('clover_statistics').findOneAndUpdate({},{$inc:{total:1}})
+}
+
+const newSdkKey = ()=>{
+    return client.db(db).collection('clover_general_conf').findOneAndUpdate({},{$set:{client_sdk:generateSdkKey()}})
+}
 
 module.exports={
     Connect,
@@ -171,4 +244,20 @@ module.exports={
     getCollections,
     getDBInfo,
     getCollectionData,
+    getFrom,
+    getById,
+    getByIdAndUpdate,
+    removeById,
+    getDbRules,
+    getGeneralConf,
+    addStorage,
+    addManyStorage,
+    findStorage,
+    deleteStorage,
+    countStorage,
+    updateReads,
+    updateWrites,
+    updateRequests,
+    newSdkKey
+
 }

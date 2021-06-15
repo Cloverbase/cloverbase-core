@@ -1,7 +1,7 @@
 const express = require('express');
 const auth = require('../../../auth');
 const router = express.Router();
-const { login, register,activate, resetPassword, forgetPassword } = require('../../../../controllers/usersController');
+const { login, register,activate, resetPassword, forgetPassword, changePassword } = require('../../../../controllers/usersController');
 const activation = require('../../../activation');
 
 
@@ -28,14 +28,19 @@ router.post('/singup', auth.optional, register);
 router.post('/activateAccount', activate);
 
 //@router User api/users
-//@desc activating account from email
+//@desc sending code to email for use in forgetpassword
 //@access public
 router.post('/resetPassword', resetPassword);
 
 //@router User api/users
-//@desc activating account from email
+//@desc change password withput past password a verification code required
 //@access public
 router.post('/forgetPassword', forgetPassword);
+
+//@router User api/users
+//@desc changing password from a loged account
+//@access public
+router.post('/changePassword',activation(),auth.required,changePassword);
 
 
 //@router User api/users

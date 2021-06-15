@@ -75,4 +75,4 @@ UserSchema.methods.toAuthJSON = function() {
 
 
 /// create a new collectio in  mongo db called  user that's all
-module.exports = User = mongoose.model('users', UserSchema);
+module.exports = User = mongoose.model('clover_users', UserSchema);

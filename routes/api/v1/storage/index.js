@@ -1,8 +1,11 @@
 const express = require('express');
 const router = express.Router();
 const auth = require('../../../auth');
-const { uploadFile, uploadMultipleFiles } = require('../../../../controllers/storageController');
+const { uploadFile, uploadMultipleFiles, serveFiles, deleteFile, totalStoredFiles } = require('../../../../controllers/storageController');
 const { upload } = require('../../../../services/storage');
+const rules = require('../../../rules');
+const access = require('../../../access');
+const sdk = require('../../../sdk');
 
 
 //  ██████╗ ██╗       ██████╗  ██╗   ██╗ ███████╗ ██████╗  
@@ -17,10 +20,18 @@ const { upload } = require('../../../../services/storage');
 // storage 
 // upload single file 
 
-router.post('/uploadfile', auth.optional, upload.single('myFile'),uploadFile )
+router.post('/uploadfile', rules.storage, upload.single('myFile'),uploadFile )
 
 // upload multiple files 
-router.post('/uploadmultiple', auth.required, upload.array('myFiles', 12),uploadMultipleFiles )
+router.post('/uploadmultiple', rules.storage, upload.array('myFiles', 12),uploadMultipleFiles )
 
+
+router.get('/uploads/:file',serveFiles)
+
+
+router.delete('/deletefile/:file',rules.storage,deleteFile)
+
+
+router.get('/total',auth.required,access('readAny','data'),sdk.admin(),totalStoredFiles)
 
 module.exports = router;
